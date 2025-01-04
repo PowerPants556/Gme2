@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class NetworkStatistic : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class NetworkStatistic : MonoBehaviour
         yield return new WaitForSeconds(3);
         while (true)
         {
-            UIManager.Instance.ChangeConnectedPlayersTxt(PhotonNetwork.CountOfPlayers);
+            UIManager.Instance.ChangeConnectedPlayerText(PhotonNetwork.CountOfPlayers);
             yield return new WaitForSeconds(6);
         }
     }

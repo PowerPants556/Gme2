@@ -10,7 +10,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 {
     [SerializeField] private TMP_Text playerNameText;
 
-    public PlayerListItem playerInfo { private get; set; }
+    public Player playerInfo { private get; set; }
 
     void Start()
     {
@@ -22,7 +22,7 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
         playerNameText.text = playerInfo.NickName;
     }
 
-    public override void OnPlayerLeftRoom(PlayerListItem otherPlayer)
+    public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         if(playerInfo == otherPlayer)
         {
@@ -32,6 +32,6 @@ public class PlayerListItem : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        Destroy(GameObject);
+        Destroy(gameObject);
     }
 }

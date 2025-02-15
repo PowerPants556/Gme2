@@ -4,11 +4,5 @@ using UnityEngine;
 
 public abstract class ItemData : ScriptableObject
 {
-    [SerializeField] protected ItemData data;
-    protected GameObject itemObject;
-
-    protected abstract void Awake();
-    protected abstract void Start();
-    protected abstract void Update();
-    protected abstract void Use();
+    public string Name;
 }

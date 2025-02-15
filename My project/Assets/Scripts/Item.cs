@@ -5,10 +5,15 @@ using UnityEngine;
 public abstract class Item : MonoBehaviour
 {
     [SerializeField] protected ItemData data;
-    protected GameObject itemObject;
+    [SerializeField] protected GameObject itemObject;
 
+    public GameObject ItemObject
+    {
+        get { return itemObject; }
+    }
+   
     protected abstract void Awake();
     protected abstract void Start();
     protected abstract void Update();
-    protected abstract void Use();
+    public abstract void Use();
 }

@@ -88,7 +88,17 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         {
             modifier = -1;
         }
-        EquipItem(Mathf.Clamp((itemIndex + modifier), 0, items.Length - 1));
+        int newIndex = itemIndex + modifier;
+        if(newIndex < 0)
+        {
+            newIndex = items.Length - 1;
+        }
+        else if (newIndex > items.Length -1)
+        {
+            newIndex = 0;
+        }
+        EquipItem(newIndex);
+        //EquipItem(Mathf.Clamp((itemIndex + modifier), 0, items.Length -1));
     }
 
     private void EquipItem(int newIndex)

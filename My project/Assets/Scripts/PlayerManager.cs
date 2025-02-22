@@ -20,9 +20,11 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     private void CreateController()
     {
+        Transform point = SpawnManager.Instance.GetRandomSpawnPoint();
+
         controller = 
             PhotonNetwork.Instantiate(Path.Combine("PlayerController"),
-            Vector3.zero, Quaternion.identity,0, new object[] {pView.ViewID});
+            point.position, point.rotation,0, new object[] {pView.ViewID});
     }
 
     public void Die()

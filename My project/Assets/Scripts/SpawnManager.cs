@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static SpawnManager Instance;
+    public SpawnPoint[] spawnPoints;
+
+    private void Awake()
     {
-        
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+        spawnPoints = GetComponentsInChildren<SpawnPoint>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public Transform GetRandomSpawnPoint()
     {
-        
+        return spawnPoints[Random.Range(0, spawnPoints.Length)].transform;
     }
 }

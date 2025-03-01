@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using Photon.Realtime;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 {
@@ -15,6 +16,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     [SerializeField] private Rigidbody rb;
     [SerializeField] private PhotonView pView;
     [SerializeField] private GameObject cameraHolder;
+    [SerializeField] private Image healthBar;
+    [SerializeField] private GameObject ui;
 
     private Vector3 smoothMove, moveAmount;
 
@@ -34,6 +37,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         playerManager = PhotonView.Find((int)pView.InstantiationData[0]).GetComponent<PlayerManager>();
         if (!pView)
         {
+            //Destroy(ui);
             Destroy(playerCamera);
             Destroy(rb);
         }
@@ -144,6 +148,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
         if (!pView.IsMine) return;
         currentHealth -= Mathf.Clamp(currentHealth - damage, 0, MAX_HEALTH);
+        healthBar.fillAmount = currentHealth / MAX_HEALTH;
         if (currentHealth <= 0) playerManager.Die();
     }
 

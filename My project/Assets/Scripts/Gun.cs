@@ -16,7 +16,7 @@ public class Gun : Weapon
     protected override void Awake()
     {
         pView = GetComponent<PhotonView>();
-        gunAnimator = GetComponent<Animator>;
+        gunAnimator = GetComponent<Animator>();
     }
     protected override void Start()
     {
@@ -38,12 +38,19 @@ public class Gun : Weapon
         if(Physics.Raycast(ray, out RaycastHit hit))
         {
             hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((WeaponData)data).Damage);
+            pView.RPC("RPC_SHOOT", RpcTarget.All, hit.point, hit.normal);
         }
     }
 
     [PunRPC]
     private void RPC_Shoot(Vector3 hitPoint, Vector3 hitNormal)
     {
-
+        Collider[] colls = Physics.OverlapSphere(hitPoint, 0.1f);
+        if(colls.Length != 0)
+        {
+            GameObject bulletImp = Instantiate(bulletPrefab, hitPoint,
+                Quaternion.LookRotation(hitNormal, Vector3.up)* bulletPrefab.transform.rotation);
+            bulletImp.transform.SetParent(colls[0].transform);
+        }
     }
 }

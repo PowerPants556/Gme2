@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using TMPro;
 
 public class Gun : Weapon
 {
@@ -10,6 +11,8 @@ public class Gun : Weapon
     [SerializeField] private GameObject shootFX;
     [SerializeField] private Transform muzzle;
     [SerializeField] private Animator gunAnimator;
+    [SerializeField] private TMP_Text ammoText;
+
 
     private PhotonView pView;
 
@@ -17,10 +20,14 @@ public class Gun : Weapon
     {
         pView = GetComponent<PhotonView>();
         gunAnimator = GetComponent<Animator>();
+        if (!pView.IsMine)
+        {
+            Destroy(ammoText);
+        }
     }
     protected override void Start()
     {
-
+        //currentAmmo = (GunData)data
     }
     protected override void Update()
     {

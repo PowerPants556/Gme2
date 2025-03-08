@@ -27,8 +27,10 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             point.position, point.rotation,0, new object[] {pView.ViewID});
     }
 
-    public void Die()
+    public void Die(Vector3 pos)
     {
+        var destroyFX = PhotonNetwork.Instantiate(Path.Combine("DestroyFX"),pos, 
+            Quaternion.identity,0, new object[] { pView.ViewID });
         PhotonNetwork.Destroy(controller);
         CreateController();
     }

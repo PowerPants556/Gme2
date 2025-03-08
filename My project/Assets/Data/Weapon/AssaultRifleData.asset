@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e013efdb72f7d8242bbe6fa4592f6ff3, type: 3}
-  m_Name: AutomaticRifleData
+  m_Name: AssaultRifleData
   m_EditorClassIdentifier: 
   Name: AssaultRifle
   Damage: 27

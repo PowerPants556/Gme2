@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Weapon : Item
+public abstract class Weapon<TData> : Item<TData> where TData : WeaponData
 {
     protected abstract override void Awake();
     protected abstract override void Start();

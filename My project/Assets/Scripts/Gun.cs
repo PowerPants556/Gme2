@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 
-public class Gun : Weapon
+public class Gun : Weapon<GunData>
 {
     [SerializeField] private Camera charCamera;
     [SerializeField] private GameObject bulletPrefab;
@@ -15,6 +15,8 @@ public class Gun : Weapon
 
 
     private PhotonView pView;
+    private bool isReload = false;
+    private int currentAmmo;
 
     protected override void Awake()
     {
@@ -27,8 +29,15 @@ public class Gun : Weapon
     }
     protected override void Start()
     {
-        //currentAmmo = (GunData)data
+        currentAmmo = data.maxAmmo;
+        UpdateAmmoUI();
     }
+
+    private void OnEnable()
+    {
+        UpdateAmmoUI();
+    }
+
     protected override void Update()
     {
 
@@ -40,12 +49,21 @@ public class Gun : Weapon
 
     private void Shoot()
     {
+        if (currentAmmo < 1 && !isReload) return;
+        currentAmmo--;
+        UpdateAmmoUI();
+        //gunAnimator.Play("ShootAnim");
         Ray ray = charCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         ray.origin = charCamera.transform.position;
         if(Physics.Raycast(ray, out RaycastHit hit))
         {
             hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((WeaponData)data).Damage);
             pView.RPC("RPC_SHOOT", RpcTarget.All, hit.point, hit.normal);
+        }
+        if (currentAmmo < 1 && !isReload)
+        {
+            isReload = true;
+            Invoke("Reload", data.reloadTime);
         }
     }
 
@@ -59,5 +77,17 @@ public class Gun : Weapon
                 Quaternion.LookRotation(hitNormal, Vector3.up)* bulletPrefab.transform.rotation);
             bulletImp.transform.SetParent(colls[0].transform);
         }
+    }
+
+    private void UpdateAmmoUI()
+    {
+        ammoText.text = $"AMMO: {currentAmmo}";
+    }
+
+    private void Reload()
+    {
+        currentAmmo = data.maxAmmo;
+        isReload = false;
+        UpdateAmmoUI();
     }
 }

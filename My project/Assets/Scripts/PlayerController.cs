@@ -9,10 +9,11 @@ using TMPro;
 
 public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 {
-    private const float MAX_HEALTH = 100;
     private PlayerManager playerManager;
 
-    [SerializeField] private Item[] items;
+    [SerializeField] private PlayerData playerData;
+
+    [SerializeField] private Gun[] items;
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private PhotonView pView;
@@ -20,12 +21,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     [SerializeField] private Image healthBar;
     [SerializeField] private GameObject ui;
     [SerializeField] private Animator visualDamageAnimator;
+    [SerializeField] private Image StaminaBar;
     //[SerializeField] private GameObject destroyFX;
 
     private Vector3 smoothMove, moveAmount;
 
-    private float walkSpeed, sprintSpeed, mouseSensetivity,
-        jumpForce, smoothTime, verticalLookRotation, currentHealth;
+    private float smoothTime =1f, verticalLookRotation, currentHealth, currentStamina;
 
     private bool isReload = false;
     private int currentAmmo;
@@ -36,7 +37,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     private void Awake()
     {
-        currentHealth = MAX_HEALTH;
+        currentHealth = playerData.maxHealth;
     }
     private void Start()
     {
@@ -65,8 +66,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     private void Look()
     {
-        transform.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * mouseSensetivity);
-        verticalLookRotation += Input.GetAxisRaw("Mouse Y") * mouseSensetivity;
+        transform.Rotate(Vector3.up * Input.GetAxisRaw("Mouse X") * playerData.mouseSensetivity);
+        verticalLookRotation += Input.GetAxisRaw("Mouse Y") * playerData.mouseSensetivity;
         verticalLookRotation = Mathf.Clamp(verticalLookRotation, -80f, 90f);
         cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
     }
@@ -74,14 +75,14 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     private void Movement()
     {
         Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-        moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMove, smoothTime);
+        moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? playerData.baseSprintSpeed : playerData.baseWalkSpeed), ref smoothMove, smoothTime);
     }
 
     private void Jump()
     {
         if(Input.GetKeyDown(KeyCode.Space) && isGround)
         {
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(transform.up * playerData.baseJumpForce, ForceMode.Impulse);
         }
     }
 
@@ -153,8 +154,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     private void RPC_Damage(float damage)
     {
         if (!pView.IsMine) return;
-        currentHealth -= Mathf.Clamp(currentHealth - damage, 0, MAX_HEALTH);
-        healthBar.fillAmount = currentHealth / MAX_HEALTH;
+        currentHealth -= Mathf.Clamp(currentHealth - damage, 0, playerData.maxHealth);
+        healthBar.fillAmount = currentHealth / playerData.maxHealth;
         visualDamageAnimator.Play("takeDamage");
         if (currentHealth <= 0) playerManager.Die(transform.position); 
     }

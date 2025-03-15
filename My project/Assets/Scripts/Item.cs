@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Item : MonoBehaviour, IUseable
+public abstract class Item<TData> : MonoBehaviour, IUseable where TData : ItemData
 {
-    [SerializeField] protected ItemData data;
+    [SerializeField] protected TData data;
     [SerializeField] protected GameObject itemObject;
 
     public GameObject ItemObject

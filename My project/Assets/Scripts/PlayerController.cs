@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     private void Awake()
     {
         currentHealth = playerData.maxHealth;
+        currentStamina = playerData.maxStamina;
     }
     private void Start()
     {
@@ -75,7 +76,20 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     private void Movement()
     {
         Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-        moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? playerData.baseSprintSpeed : playerData.baseWalkSpeed), ref smoothMove, smoothTime);
+        moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * 
+            ((Input.GetKey(KeyCode.LeftShift) && currentStamina > 1) ? playerData.baseSprintSpeed : playerData.baseWalkSpeed), ref smoothMove, smoothTime);
+        if (Input.GetKeyDown(KeyCode.LeftShift) && currentStamina > 0f)
+        {
+            currentStamina -= 0.15f;
+        }
+        else
+        {
+            if (currentStamina < playerData.maxStamina)
+            {
+                currentStamina += 0.1f;
+            }
+        }
+        StaminaBar.fillAmount = currentStamina / playerData.maxStamina;
     }
 
     private void Jump()
